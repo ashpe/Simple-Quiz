@@ -4,17 +4,15 @@ use Moose;
 use Data::Dumper;
 
 has 'filename', is => 'rw', isa => 'Str';
+has 'section_start', is => 'rw', isa => 'Int';
+has 'section_max', is => 'rw', isa => 'Int';
 has 'sections', is => 'rw', isa => 'ArrayRef', predicate => '_has_sections';
 
-sub load_data {
-  my ($self, $file) = @_;
-  $self->$filename($file);
-  return $self->$filename;
-}
-
-sub set_sections {
-  my ($self, $sections) = @_;
-  print Dumper($sections);
+sub load_sections {
+  my ($self, $start, $max) = @_;
+  $self->section_start($start);
+  $self->section_max($max);
+  $self->sections(["Load the sections here"]);
 }
 
 sub start {
@@ -27,3 +25,4 @@ sub start {
   return 1;
 }
 
+1;
