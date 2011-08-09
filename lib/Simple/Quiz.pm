@@ -31,7 +31,7 @@ sub load_sections {
     say "Error can't load following sections: @section_errors";
   }
 
-  $self->sections(["Load the sections here"]);
+  return 1;
 }
 
 sub start {
