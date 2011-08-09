@@ -19,9 +19,17 @@ if ($quiz->start()) {
   say "Quiz started successfully: " . $quiz->title . "(section " . $quiz->current_section . ")";
   say "Preparing questions in " . $quiz->mode . " mode..";
   while (my $question = $quiz->next_question()) {
-    say "How do you say " . $question->{question} . " in cantonese?";
+    say "How do you say \"" . $question->{question} . "\" in cantonese?";
     my $answer = <STDIN>;
-    $quiz->answer_question($answer);
+    chomp $answer;
+    my $check_answer = $quiz->answer_question_approx($answer);
+    if ($check_answer) {
+      print "Correct: ";
+    } else {
+      print "Incorrect: ";
+    }
+    say "Answer is $question->{answer}..";
+      
   } 
 
 }

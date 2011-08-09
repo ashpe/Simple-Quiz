@@ -5,6 +5,7 @@ use Moose;
 use YAML::XS qw/LoadFile/;
 use Data::Dumper;
 use POSIX qw/ceil/;
+use String::Approx qw/amatch/;
 
 has 'filename', is => 'rw', isa => 'Str';
 has 'status', is => 'rw', isa => 'Bool', predicate => '_has_started';
@@ -77,21 +78,48 @@ sub get_next_index {
 
   do {
     $next_index = int(rand(scalar @{$section}));
-    say $next_index;
   } while(grep { $_ == $next_index } @{$self->completed_sections});
  
   return $next_index;
  
 }
 
-sub answer_question {
+sub answer_question_exact {
   my ($self, $answer) = @_;
-  push @{$self->completed_sections}, $self->current_question;
-  return 1;
+  
+  my $section = $self->sections->{$self->current_section};
+  my $cur_question = $self->current_question;  
+
+  push @{$self->completed_sections}, $cur_question;
+  my $correct_answer = $section->[$cur_question]{answer};
+  if ($answer eq $correct_answer) {
+    return 1;
+  } else {
+    return 0;
+  }
+
+}
+
+sub answer_question_approx {
+  my ($self, $answer) = @_;
+  
+  my $section = $self->sections->{$self->current_section};
+  my $cur_question = $self->current_question;  
+
+  push @{$self->completed_sections}, $cur_question;
+  my $correct_answer = $section->[$cur_question]{answer};
+  my $matches = amatch($correct_answer, $answer, ['i']);
+
+  if ($matches) {
+    return 1;
+  } else {
+    return 0;
+  }
+
 }
 
 sub section_complete {
-  my ($self, $section) = @_; 
+  my ($self, $section) = @_;
   push @{$self->completed_sections}, $section;
 }
 
