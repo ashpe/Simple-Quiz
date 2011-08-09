@@ -7,7 +7,7 @@ use Data::Dumper;
 
 has 'filename', is => 'rw', isa => 'Str';
 has 'title', is => 'rw', isa => 'Str';
-has 'sections', is => 'rw', isa => 'ArrayRef', predicate => '_has_sections', default => sub { [] };
+has 'sections', is => 'rw', isa => 'HashRef', predicate => '_has_sections', default => sub { {} };
 
 sub load_sections {
   my ($self, $sections) = @_;
@@ -21,7 +21,7 @@ sub load_sections {
   foreach (@{$sections}) { 
     my $section = $questions_input->{questions}{sections}{$_};
     if (defined $section) {
-      push @{$self->sections}, $section;
+      $self->sections->{$_} = $section;
     } else {
       push @section_errors, $_;
     }
@@ -31,7 +31,7 @@ sub load_sections {
     say "Error can't load following sections: @section_errors";
   }
 
-  $self->sections(["Load the sections here"]);
+  return 1;
 }
 
 sub start {

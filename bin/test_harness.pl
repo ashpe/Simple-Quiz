@@ -2,6 +2,7 @@
 
 use Modern::Perl;
 use Simple::Quiz;
+use Data::Dumper;
 
 my $quiz_file = $ARGV[0];
 
@@ -15,4 +16,5 @@ if ($quiz->load_sections(\@sections)) {
 
 if ($quiz->start()) {
   say "Quiz started successfully: " . $quiz->title;
+  say Dumper($quiz->sections);
 }
