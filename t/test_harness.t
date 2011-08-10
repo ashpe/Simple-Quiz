@@ -26,7 +26,7 @@ if ($quiz->start()) {
   say "Quiz started successfully: " . $quiz->title; 
   say "Preparing questions in " . $quiz->mode . " mode..";
   while (my $section = $quiz->next_section()) {
-      say "Section " . $quiz->current_section;
+      say "\n== Section " . $quiz->current_section . " ==";
       while (my $question = $quiz->next_question()) {
         say "How do you say \"" . $question->{question} . "\" in cantonese?";
         my $answer = <STDIN>;
@@ -39,7 +39,9 @@ if ($quiz->start()) {
         }
         say "Answer is $question->{answer}..";
       }
-      say "Quiz completed.";
+      say "Section completed";
   }
+
+  say "\n\nQuiz Completed\n\n -- Results -- \n Nothing correct!\n\n";
 
 }
