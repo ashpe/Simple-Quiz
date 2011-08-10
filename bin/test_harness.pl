@@ -4,11 +4,16 @@ use Modern::Perl;
 use Simple::Quiz;
 use Data::Dumper;
 
+if (!$ARGV[0]) {
+  die("Please specify a file test_harness.pl <filename>");
+}
+
 my $quiz_file = $ARGV[0];
 
 my $quiz = Simple::Quiz->new(filename => $quiz_file, title => "Learning cantonese", mode => 'shuffle');
 
-my @sections = (1 .. 5);
+#my @sections = (1 .. 5);
+my @sections = qw/three four/;
 
 if ($quiz->load_sections(\@sections)) {
   say "Sections loaded successfully";

@@ -20,6 +20,10 @@ has 'sections', is => 'rw', isa => 'HashRef', predicate => '_has_sections', defa
 
 sub load_sections {
   my ($self, $sections) = @_;
+
+  if ($self->_has_started) {
+     return 0;
+  }  
   
   open my $fh, '<', $self->filename;
   my $questions_input = LoadFile($fh);
@@ -37,17 +41,20 @@ sub load_sections {
     }
   }
 
-  if (scalar @section_errors >= 1) {
+  my $error_total = scalar @section_errors;
+  if ($error_total == scalar @${sections}) {
+    return 0;
+    $self->sections(undef);
+  } elsif (scalar @section_errors >= 1) {
     say "Error can't load following sections: @section_errors";
-  }
+  } 
 
   return 1;
 }
 
 sub start {
   my $self = shift;
-
-  if (!$self->_has_sections) {
+  if (scalar keys %{$self->sections} == 0) {
     die("Error: No sections specified for quiz");
   }
 
@@ -55,7 +62,7 @@ sub start {
     my $section = $self->section_keys->[rand(scalar @{$self->section_keys})];
     $self->current_section($section);
   }    
- 
+  $self->status(1); 
   return 1;
 }
 
@@ -84,6 +91,7 @@ sub get_next_index {
  
 }
 
+# Matches exactly - typos = incorect
 sub answer_question_exact {
   my ($self, $answer) = @_;
   
@@ -100,6 +108,7 @@ sub answer_question_exact {
 
 }
 
+# Matches a certain amount of a word to allow for typos.
 sub answer_question_approx {
   my ($self, $answer) = @_;
   
