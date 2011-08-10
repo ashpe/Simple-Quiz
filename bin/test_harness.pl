@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+#PODNAME: TestScript
+
 use Modern::Perl;
 use Simple::Quiz;
 use Data::Dumper;

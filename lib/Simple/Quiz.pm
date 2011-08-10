@@ -1,5 +1,7 @@
 package Simple::Quiz;
 
+# ABSTRACT: Simple quiz API
+
 use Modern::Perl;
 use Moose;
 use YAML::XS qw/LoadFile/;
@@ -117,7 +119,7 @@ sub answer_question_approx {
 
   push @{$self->completed_sections}, $cur_question;
   my $correct_answer = $section->[$cur_question]{answer};
-  my $matches = amatch($correct_answer, $answer, ['i']);
+  my $matches = amatch(lc($correct_answer), lc($answer));
 
   if ($matches) {
     return 1;
