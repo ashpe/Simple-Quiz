@@ -22,7 +22,7 @@ has 'mode', is => 'rw', isa => 'Str';
 has 'completed_questions', is => 'rw', isa => 'ArrayRef', default => sub { [] };
 has 'completed_sections', is => 'rw', isa => 'ArrayRef', default => sub { [] };
 has 'section_keys', is => 'rw', isa => 'ArrayRef', default => sub { [] };
-has 'sections', is => 'rw', isa => 'HashRef', predicate => '_has_sections', default => sub { {} };
+has 'sections', is => 'rw', isa => 'HashRef', default => sub { {} };
 
 sub load_sections {
   my ($self, $sections) = @_;
