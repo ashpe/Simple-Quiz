@@ -1,17 +1,16 @@
 questions:
   sections:
-    1:
-     - answer: Nay Hoh
-       question: Hello
-     - answer: Nay
-       question: You
-     - answer: Hoh        
-       question: Very or Good
-    2:
+    three:
      - answer: Nay Hoh Mah
        question: How are you?
      - answer: Ngor
        question: I
      - answer: Ngor Hoh Hoh
        question: I'm very good
-
+    four:
+     - answer: Nay Hoh Mah
+       question: How are you?
+     - answer: Ngor
+       question: I
+     - answer: Ngor Hoh Hoh
+       question: I'm very good
