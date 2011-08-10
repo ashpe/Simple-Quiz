@@ -10,8 +10,9 @@ use Moose;
 use YAML::XS qw/LoadFile/;
 use Data::Dumper;
 use POSIX qw/ceil/;
-use String::Approx qw/amatch/;
+use Text::LevenshteinXS qw/distance/;
 
+has 'approx', is => 'rw', isa =>'Int', default => '1';
 has 'filename', is => 'rw', isa => 'Str';
 has 'status', is => 'rw', isa => 'Bool', predicate => '_has_started';
 has 'title', is => 'rw', isa => 'Str';
@@ -49,7 +50,6 @@ sub load_sections {
   my $error_total = scalar @section_errors;
   if ($error_total == scalar @${sections}) {
     return 0;
-    $self->sections(undef);
   } elsif (scalar @section_errors >= 1) {
     say "Error can't load following sections: @section_errors";
   } 
@@ -122,9 +122,9 @@ sub answer_question_approx {
 
   push @{$self->completed_sections}, $cur_question;
   my $correct_answer = $section->[$cur_question]{answer};
-  my $matches = amatch(lc($correct_answer), lc($answer));
+  my $matches = distance(lc($correct_answer), lc($answer));
 
-  if ($matches) {
+  if ($matches <= $self->approx) {
     return 1;
   } else {
     return 0;
