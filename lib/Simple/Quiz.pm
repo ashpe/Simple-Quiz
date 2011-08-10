@@ -62,11 +62,9 @@ sub start {
   if (scalar keys %{$self->sections} == 0) {
     die("Error: No sections specified for quiz");
   }
-
-  if ($self->mode eq 'shuffle') {
-    my $section = $self->section_keys->[rand(scalar @{$self->section_keys})];
-    $self->current_section($section);
-  } 
+  
+  #TODO: Add more checking here to make sure survey has be initiated
+  #      correctly.
 
   $self->status(1); # start quiz 
   return 1;
@@ -78,7 +76,7 @@ sub next_section {
     $self->status(0); # end quiz  
     return 0; 
   } else {  
-    my $next_section = $self->section_keys->[$self->get_next_section_index()];
+    my $next_section = $self->section_keys->[$self->__get_next_section_index()];
     $self->current_section($next_section);
     return $next_section;
   }
@@ -91,36 +89,12 @@ sub next_question {
     $self->section_complete($self->current_section);
     return 0; 
   } else {
-    $self->current_question($self->get_next_question_index());
+    $self->current_question($self->__get_next_question_index());
     my $next_question = $section->[$self->current_question];
     return $next_question;
   }
 }
 
-sub get_next_question_index {
-  my $self = shift;
-  my $section = $self->sections->{$self->current_section};
-  my $next_index;  
-
-  do {
-    $next_index = int(rand(scalar @{$section}));
-  } while(grep { $_ == $next_index } @{$self->completed_questions});
- 
-  return $next_index;
- 
-}
-
-sub get_next_section_index {
-  my $self = shift;
-  my $section = $self->section_keys;
-  my $next_index;  
-  do {
-    $next_index = int(rand(scalar @{$section}));
-  } while(grep { $_ eq @{$self->section_keys}[$next_index] } @{$self->completed_sections});
- 
-  return $next_index;
- 
-}
 
 # Matches exactly - typos = incorect
 sub answer_question_exact {
@@ -165,6 +139,26 @@ sub section_complete {
 }
 
 1;
+
+sub __get_next_question_index {
+  my $self = shift;
+  my $section = $self->sections->{$self->current_section};
+  my $next_index;  
+  do {
+    $next_index = int(rand(scalar @{$section}));
+  } while(grep { $_ == $next_index } @{$self->completed_questions});
+  return $next_index;
+}
+
+sub __get_next_section_index {
+  my $self = shift;
+  my $section = $self->section_keys;
+  my $next_index;  
+  do {
+    $next_index = int(rand(scalar @{$section}));
+  } while(grep { $_ eq @{$self->section_keys}[$next_index] } @{$self->completed_sections});
+  return $next_index;
+}
 
 __END__
 =pod
