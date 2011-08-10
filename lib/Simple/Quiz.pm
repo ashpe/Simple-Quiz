@@ -9,7 +9,6 @@ use Modern::Perl;
 use Moose;
 use YAML::XS qw/LoadFile/;
 use Data::Dumper;
-use POSIX qw/ceil/;
 use Text::LevenshteinXS qw/distance/;
 
 has 'approx', is => 'rw', isa =>'Int', default => '1';
