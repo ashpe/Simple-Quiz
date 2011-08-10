@@ -66,31 +66,56 @@ sub start {
   if ($self->mode eq 'shuffle') {
     my $section = $self->section_keys->[rand(scalar @{$self->section_keys})];
     $self->current_section($section);
-  }    
+  } 
+
   $self->status(1); 
   return 1;
+}
+
+sub next_section {
+  my $self = shift;
+  if (scalar @{$self->section_keys} == scalar @{$self->completed_sections}) {
+    return 0; 
+  } else {  
+    my $next_section = $self->section_keys->[$self->get_next_section_index()];
+    $self->current_section($next_section);
+    return $next_section;
+  }
 }
 
 sub next_question {
   my $self = shift;
   my $section = $self->sections->{$self->current_section};
-  if (scalar @{$section} == scalar @{$self->completed_sections}) {
+  if (scalar @{$section} == scalar @{$self->completed_questions}) {
+    $self->section_complete($self->current_section);
     return 0; 
   } else {
-    $self->current_question($self->get_next_index());
+    $self->current_question($self->get_next_question_index());
     my $next_question = $section->[$self->current_question];
     return $next_question;
   }
 }
 
-sub get_next_index {
+sub get_next_question_index {
   my $self = shift;
   my $section = $self->sections->{$self->current_section};
   my $next_index;  
 
   do {
     $next_index = int(rand(scalar @{$section}));
-  } while(grep { $_ == $next_index } @{$self->completed_sections});
+  } while(grep { $_ == $next_index } @{$self->completed_questions});
+ 
+  return $next_index;
+ 
+}
+
+sub get_next_section_index {
+  my $self = shift;
+  my $section = $self->section_keys;
+  my $next_index;  
+  do {
+    $next_index = int(rand(scalar @{$section}));
+  } while(grep { $_ eq @{$self->section_keys}[$next_index] } @{$self->completed_sections});
  
   return $next_index;
  
@@ -103,7 +128,7 @@ sub answer_question_exact {
   my $section = $self->sections->{$self->current_section};
   my $cur_question = $self->current_question;  
 
-  push @{$self->completed_sections}, $cur_question;
+  push @{$self->completed_questions}, $cur_question;
   my $correct_answer = $section->[$cur_question]{answer};
   if ($answer eq $correct_answer) {
     return 1;
@@ -120,7 +145,7 @@ sub answer_question_approx {
   my $section = $self->sections->{$self->current_section};
   my $cur_question = $self->current_question;  
 
-  push @{$self->completed_sections}, $cur_question;
+  push @{$self->completed_questions}, $cur_question;
   my $correct_answer = $section->[$cur_question]{answer};
   my $matches = distance(lc($correct_answer), lc($answer));
 
@@ -135,6 +160,7 @@ sub answer_question_approx {
 sub section_complete {
   my ($self, $section) = @_;
   push @{$self->completed_sections}, $section;
+  $self->completed_questions([]);
 }
 
 1;
