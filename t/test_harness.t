@@ -14,8 +14,8 @@ my $quiz_file = $ARGV[0];
 
 my $quiz = Simple::Quiz->new(filename => $quiz_file, title => "Learning cantonese", mode => 'shuffle');
 
-#my @sections = (1 .. 5);
-my @sections = qw/three four/;
+my @sections = (1 .. 5);
+#my @sections = qw/three four/;
 
 if ($quiz->load_sections(\@sections)) {
   say "Sections loaded successfully";
@@ -41,7 +41,5 @@ if ($quiz->start()) {
       }
       say "Section completed";
   }
-
   say "\n\nQuiz Completed\n\n -- Results -- \n Nothing correct!\n\n";
-
 }

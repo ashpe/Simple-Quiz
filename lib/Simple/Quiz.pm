@@ -68,13 +68,14 @@ sub start {
     $self->current_section($section);
   } 
 
-  $self->status(1); 
+  $self->status(1); # start quiz 
   return 1;
 }
 
 sub next_section {
   my $self = shift;
   if (scalar @{$self->section_keys} == scalar @{$self->completed_sections}) {
+    $self->status(0); # end quiz  
     return 0; 
   } else {  
     my $next_section = $self->section_keys->[$self->get_next_section_index()];
