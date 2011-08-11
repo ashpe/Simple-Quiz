@@ -18,6 +18,8 @@ has 'title',            is => 'rw', isa => 'Str';
 has 'answer',           is => 'rw', isa => 'Str';
 has 'current_section',  is => 'rw', isa => 'Str';
 has 'current_question', is => 'rw', isa => 'Int';
+has 'correct_answers', is => 'rw', isa => 'Int', default => 0;
+has 'total_questions', is => 'rw', isa => 'Int', default => 0;
 has 'mode',             is => 'rw', isa => 'Str';
 has 'completed_questions', is => 'rw', isa => 'ArrayRef', default => sub { [] };
 has 'completed_sections', is => 'rw', isa => 'ArrayRef', default => sub { [] };
@@ -139,8 +141,11 @@ sub answer_question_approx {
     push @{ $self->completed_questions }, $cur_question;
     my $correct_answer = $section->[$cur_question]{answer};
     my $matches = distance( lc($correct_answer), lc($answer) );
-
+    my $total_questions = $self->total_questions + 1;
+    $self->total_questions($total_questions);
     if ( $matches <= $self->approx ) {
+        my $correct_answers = $self->correct_answers + 1;
+        $self->correct_answers($correct_answers);
         return 1;
     }
     else {
