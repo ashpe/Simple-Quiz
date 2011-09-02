@@ -5,7 +5,7 @@ package Simple::Quiz::Create;
 
 use Modern::Perl;
 use Moose;
-use YAML::XS qw/LoadFile/;
+use YAML::XS qw/DumpFile/;
 use Carp;
 
 # ABSTRACT: Module for creating simple quizzes 
@@ -17,13 +17,13 @@ use Carp;
 
 has 'title', is => 'rw', isa => 'Str';
 has 'filename', is => 'rw', isa => 'Str';
-has 'sections', is => 'rw', isa => 'HashRef', default => sub { [] };
+has 'sections', is => 'rw', isa => 'HashRef', default => sub { {} };
 
 
 sub generate_quiz {
     my $self = shift;
     
-    my @compulsary_attr = qw/filename sections questions/;
+    my @compulsary_attr = qw/filename sections/;
     foreach my $attribute (@compulsary_attr) {
         if (!$self->$attribute) {
             croak "$attribute is required to generate quiz!";
@@ -37,9 +37,9 @@ sub generate_quiz {
     my %quiz;
     $quiz{title} = $self->title if $self->title;
     #TODO: Add check that sections is correct format
-    $quiz{questions} = $self->sections;
+    $quiz{questions} = { sections => $self->sections };
    
-    DumpFile($self->filename, \%quiz);    
+    YAML::XS::DumpFile($self->filename . ".yaml", \%quiz);    
 }
 
 sub _check_section_format {
